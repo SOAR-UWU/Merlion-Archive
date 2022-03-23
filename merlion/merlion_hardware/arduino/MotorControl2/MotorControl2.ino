@@ -78,7 +78,7 @@ void setup()
   rosInit();
   armAll();
   //TODO: find a way to cut off comms when mother controller is not connected
-  pressureSensorInit();
+  //pressureSensorInit();
   toggleLEDBuiltIn();
 }
 
@@ -89,7 +89,7 @@ void loop()
 {
   if (!robotActive)
   {
-    i = 0;
+    i = 10;
     int speedPercentage[] = {i,i,i,i,i}; 
     motorSetSpeedAllPercentage(speedPercentage);
     delay(100);
