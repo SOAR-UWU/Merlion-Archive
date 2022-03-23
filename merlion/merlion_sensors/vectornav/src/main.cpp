@@ -527,7 +527,7 @@ void BinaryAsyncMessageReceived(void* userData, Packet& p, size_t index)
     // Temperature
     if (cd.hasTemperature())
     {
-        float temp = cd.temperature;
+        float temp = cd.temperature();
 
         sensor_msgs::Temperature msgTemp;
         msgTemp.header.stamp = msgIMU.header.stamp;

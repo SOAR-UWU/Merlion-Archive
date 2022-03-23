@@ -13,10 +13,10 @@ MS5837 sensor;
 
 #define MOTORSIZE 5 // Change this if this physical motor count increases
 #define M1_PIN 23
-#define M2_PIN 10
-#define M3_PIN 14
-#define M4_PIN 22
-#define M5_PIN 15
+#define M2_PIN 22
+#define M3_PIN 17
+#define M4_PIN 3
+#define M5_PIN 4
 
 
 struct MotorSpec 

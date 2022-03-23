@@ -49,8 +49,9 @@
       <param name="windup_limit" value="5" />
       <remap from="state" to="/$(arg state_ns)/depth"/>
     </node>
-
-    <node name="setpoint_once" pkg="merlion_pid" type="setpoint_once.py" output="screen"/>
+     
+    <node name="pid_test" pkg="merlion_pid" type="pid_test.py" output="screen"/> 
+    <!-- <node name="setpoint_once" pkg="merlion_pid" type="setpoint_once.py" output="screen"/> -->
 
   </group>
 </launch>
