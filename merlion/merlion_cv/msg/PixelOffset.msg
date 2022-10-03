@@ -1,0 +1,2 @@
+int32 offset_x
+int32 offset_y

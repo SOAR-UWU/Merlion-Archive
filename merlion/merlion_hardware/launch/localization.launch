@@ -1,0 +1,36 @@
+<launch>
+  <include file="$(find merlion_hardware)/launch/optical_odometer.launch">
+    <arg name="debug" value="False"/>
+  </include>
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization_node">
+    <param name="frequency" value="20" />
+    <param name="sensor_timeout" value="0.1" />
+    <param name="gravitational_acceleration" value="9.781" />
+
+    <param name="odom_frame" value="odom"/>
+    <param name="base_link_frame" value="merlion_hardware/base_link"/>
+    <param name="world_frame" value="odom"/>
+
+    <param name="imu0" value="/merlion_hardware/imu"/>
+    <rosparam param="imu0_config">
+      [false, false, false,
+      true,  true,  true,
+      false, false, false,
+      false, false, false,
+      false, false, false]
+    </rosparam>
+    <param name="imu0_remove_gravitational_acceleration" value="true"/>
+    <param name="imu0_differential" value="false"/>
+
+    <param name="odom0" value="/merlion_hardware/odometer"/>
+    <rosparam param="odom0_config">
+      [false, false, true,
+       false, false, false,
+       true,  true,  false,
+       false, false, false,
+       false, false, false]
+    </rosparam>
+  
+  </node>
+</launch>

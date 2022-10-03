@@ -1,0 +1,31 @@
+<launch>
+  <arg name="ns" default="merlion_hardware"/>
+  <arg name="first_camera_ns" default="front_camera"/>
+  <arg name="second_camera_ns" default="bottom_camera"/> 
+ 
+  <group ns="/$(arg ns)">
+    <node ns="$(arg first_camera_ns)" pkg="video_stream_opencv" type="video_stream" name="camera_stream" output="screen"> 
+      <remap from="camera" to="camera_image" />
+      <param name="video_stream_provider" type="string" value="4" />
+      <param name="camera_name" type="string" value="camera" />
+      <param name="buffer_queue_size" type="int" value="10" />
+      <param name="frame_id" type="string" value="camera" />
+      <param name="set_camera_fps" type="double" value="60" />
+      <param name="fps" type="double" value="60" />
+      <param name="width" type="int" value="640" />
+      <param name="height" type="int" value="360" />
+    </node>
+    <node ns= "$(arg second_camera_ns)" pkg="video_stream_opencv" type="video_stream" name="second_camera_stream" output="screen"> 
+      <remap from="camera" to="camera_image" />
+      <param name="video_stream_provider" type="string" value="0" />
+      <param name="camera_name" type="string" value="camera" />
+      <param name="buffer_queue_size" type="int" value="10" />
+      <param name="frame_id" type="string" value="camera" />
+      <param name="set_camera_fps" type="double" value="60" />
+      <param name="fps" type="double" value="60" />
+      <param name="width" type="int" value="640" />
+      <param name="height" type="int" value="360" />
+    </node>
+  </group>
+
+</launch>

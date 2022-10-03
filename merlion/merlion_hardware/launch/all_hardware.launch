@@ -1,0 +1,28 @@
+<launch>
+  <arg name="ns" default="merlion_hardware"/>
+  <arg name="mcu_port" default="/dev/ttyUSB_MCU"/>
+  <arg name="imu_port" default="/dev/ttyUSB_IMU"/>
+
+  <node name="serial_port" pkg="rosserial_python" type="serial_node.py">
+      <param name="port" type="string" value="/dev/ttyACM0"/>
+      <param name="baud" type="int" value="57600"/>
+  </node> 
+
+  <include file="$(find vectornav)/launch/vn100_imu.launch">
+    <!-- <arg name="ns" value="$(arg ns)"/> -->
+  </include>
+
+  <include file="$(find merlion_hardware)/launch/mcu.launch">
+    <arg name="ns" value="$(arg ns)"/>
+    <arg name="mcu_port" value="$(arg mcu_port)"/>
+  </include>
+
+  <include file="$(find merlion_hardware)/launch/cameras.launch">
+    <arg name="ns" value="$(arg ns)"/>
+  </include>
+
+  <!-- <include file="$(find merlion_hardware)/launch/imu.launch">
+    <arg name="ns" value="$(arg ns)"/>
+    <arg name="port" value="$(arg imu_port)"/>
+  </include> -->
+</launch>

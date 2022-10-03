@@ -1,0 +1,8 @@
+<launch>
+    <arg name="ns" default="flare"/>
+    <arg name="camera_topic" default="/merlion_hardware/camera_image"/>
+
+    <node name="tracker" pkg="merlion_cv" type="flare_tracker.py" ns="$(arg ns)" output="screen">
+      <remap from="/$(arg ns)/image" to="/$(arg camera_topic)"/>
+    </node>
+</launch>

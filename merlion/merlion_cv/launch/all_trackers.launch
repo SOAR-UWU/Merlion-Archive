@@ -1,0 +1,20 @@
+<launch>
+  <arg name="ns" default="merlion_cv"/>
+  <arg name="camera_topic" default="/merlion_hardware/camera_image"/>
+
+  <rosparam file="$(find merlion_cv)/config/cv_params.yaml"/>
+  <rosparam file="$(find merlion_cv)/config/gate_cv_params.yaml" ns="gate"/>
+  <rosparam file="$(find merlion_cv)/config/flare_cv_params.yaml" ns="flare"/>
+  <rosparam file="$(find merlion_cv)/config/bucket_cv_params.yaml" ns="bucket"/>
+
+  <include file="$(find merlion_cv)/launch/flare_tracker.launch">
+    <arg name="ns" value="$(arg ns)/flare" />
+    <arg name="camera_topic" value="$(arg camera_topic)" />
+  </include>
+
+  <include file="$(find merlion_cv)/launch/gate_tracker.launch">
+    <arg name="ns" value="$(arg ns)/gate" />
+    <arg name="camera_topic" value="$(arg camera_topic)" />
+  </include>
+
+</launch>

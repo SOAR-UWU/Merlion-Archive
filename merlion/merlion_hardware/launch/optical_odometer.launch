@@ -1,0 +1,19 @@
+<launch>
+  <arg name="ns" default="/merlion_hardware"/>
+  <arg name="depth_topic" default="/merlion_state/depth"/>
+  <arg name="camera_topic" default="/merlion_hardware/camera_image"/>
+  <arg name="debug" default="True"/>
+
+  <node name="optical_odometer" pkg="merlion_hardware" type="optical_odometer.py" ns="$(arg ns)" output="screen">
+      <param name="camera_hfov" value="1.8125"/>
+      <param name="pool_depth" value="2.0"/>
+      <param name="window_width" value="100"/>
+      <param name="odom_frame" value="odom"/>
+      <param name="base_link_frame" value="merlion_hardware/base_link"/>
+      <param name="debug" value="$(arg debug)" />
+
+      <remap from="/$(arg ns)/image" to="/$(arg camera_topic)"/>
+      <remap from="/$(arg ns)/depth" to="/$(arg depth_topic)"/>
+  </node>
+
+</launch>

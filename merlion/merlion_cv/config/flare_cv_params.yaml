@@ -1,0 +1,11 @@
+yellow: (55,90)
+vert_max_len_diff: 10
+vertical_line_thresh: 10
+hough_minLineLength: 200
+hough_maxLineGap: 15 
+canny_minVal: 300
+canny_maxVal: 500
+canny_apertureSize: 5
+gaussian_blur: (3,3)
+dilate: (3,3)
+vertical_line_angle: 10

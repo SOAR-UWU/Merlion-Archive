@@ -1,0 +1,57 @@
+<launch>
+  <arg name="ns" default="merlion_pid"/>
+  <arg name="thruster_ns" default="merlion_thruster"/>
+  <arg name="state_ns" default="merlion_state"/>
+
+  <group ns="$(arg ns)">
+
+    <node name="pid_publisher" pkg="merlion_pid" type="pid_publisher.py" output="screen">
+      <remap from="/$(arg ns)/pid_publisher" to="/$(arg thruster_ns)/input"/>
+    </node>
+
+    <node name="controller" pkg="pid" type="controller" ns="yaw" output="screen" >
+      <param name="Kp" value="10" />
+      <param name="Ki" value="3.0" />
+      <param name="Kd" value="0.0" />
+      <param name="upper_limit" value="1" />
+      <param name="lower_limit" value="-1" />
+      <param name="windup_limit" value="10" />
+      <param name="angle_error" value="true" />
+      <remap from="state" to="/$(arg state_ns)/yaw"/>
+    </node>
+
+    <node name="controller" pkg="pid" type="controller" ns="pitch" output="screen" >
+      <param name="Kp" value="1.0" />
+      <param name="Ki" value="0.00" />
+      <param name="Kd" value="0.0" />
+      <param name="upper_limit" value="1" />
+      <param name="lower_limit" value="-1" />
+      <param name="windup_limit" value="10" />
+      <remap from="state" to="/$(arg state_ns)/pitch"/>
+    </node>
+
+    <node name="controller" pkg="pid" type="controller" ns="roll" output="screen" >
+      <param name="Kp" value="1.2" />
+      <param name="Ki" value="0.00" />
+      <param name="Kd" value="0.0" />
+      <param name="upper_limit" value="1" />
+      <param name="lower_limit" value="-1" />
+      <param name="windup_limit" value="10" />
+      <remap from="state" to="/$(arg state_ns)/roll"/>
+    </node>
+
+    <node name="controller" pkg="pid" type="controller" ns="depth" output="screen" >
+      <param name="Kp" value="1.5" />
+      <param name="Ki" value="0.0" />
+      <param name="Kd" value="0.0" />
+      <param name="upper_limit" value="1" />
+      <param name="lower_limit" value="-1" />
+      <param name="windup_limit" value="5" />
+      <remap from="state" to="/$(arg state_ns)/depth"/>
+    </node>
+     
+    <node name="pid_test" pkg="merlion_pid" type="pid_test.py" output="screen"/> 
+    <!-- <node name="setpoint_once" pkg="merlion_pid" type="setpoint_once.py" output="screen"/> -->
+
+  </group>
+</launch>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>merlion_cv</name>
+  <version>0.0.0</version>
+  <description>The merlion_cv package</description>
+
+  <maintainer email="long_tran@mymail.sutd.edu.sg">BlongTran</maintainer>
+
+  <license>TODO</license>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+
+</package>

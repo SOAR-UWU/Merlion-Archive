@@ -1,0 +1,10 @@
+<launch>
+  <arg name="ns" default="merlion_state"/>
+
+  <group ns="$(arg ns)">
+    <node name="state_publisher" pkg="merlion_state" type="state_publisher.py" output="screen">
+      <remap from="/$(arg ns)/input/imu" to="/vectornav/IMU"/>
+      <remap from="/$(arg ns)/input/pressure" to="/merlion_hardware/pressure"/>
+    </node>
+  </group>
+</launch>
