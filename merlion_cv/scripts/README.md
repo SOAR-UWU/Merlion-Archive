@@ -3,7 +3,7 @@
 This folder contains all the Python files for CV in the bot.
 
 ## Custom Libraries
-`geometry/Line` - defines all functions for dealing with line information in CV. Can store in the format of OpenCV lines (x1, y1, x2, y2), two points ((x1, y1), (x2, y2)), or centre / angle / length.
+`geometry/Line` - defines all functions for dealing with line information in CV. Can store in the format of OpenCV lines `(x1, y1, x2, y2)`, two points `((x1, y1), (x2, y2))`, or `centre / angle / length`.
 
 `processing_helpers/ColourFunctions` - defines functions for working with colour values. Currently unused.
 
