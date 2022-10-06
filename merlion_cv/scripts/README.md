@@ -15,6 +15,6 @@ This folder contains all the Python files for CV in the bot.
 
 `calibrate.py` - script to get camera intrinsics. Ripped from [this article](https://medium.com/@kennethjiang/calibrate-fisheye-lens-using-opencv-333b05afa0b0).
 
-`hue_tuning.py` - script to get hue values for colour calibration. Follow instructions in the script.
+`hue_tuning.py` - script to get hue values for colour calibration. Follow instructions in the script. This script should be run on your computer, not the bot!
 
 `camera.py` - unfinished script for uploading videos to Google Drive. Done by seniors.
