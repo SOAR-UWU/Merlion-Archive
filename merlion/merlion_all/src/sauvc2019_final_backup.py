@@ -4,7 +4,6 @@ import time
 import smach
 import math
 from base_strategy import BaseStrategy
-from std_msgs.msg import String
 
 
 class FinalRoundStrategy(BaseStrategy):
@@ -12,7 +11,6 @@ class FinalRoundStrategy(BaseStrategy):
         def __init__(self, outer: BaseStrategy):
             smach.State.__init__(self, outcomes=['found_gate', 'time_out'])
             self.outer = outer
-            self.status_pub = rospy.Publisher('status', String, queue_size=10)
 
         def execute(self, userdata):
             rate = rospy.Rate(100)
@@ -23,7 +21,6 @@ class FinalRoundStrategy(BaseStrategy):
                 self.outer.output.target_depth = 1
 
                 if self.outer.input.gate_pos.size_y > 0:
-                    self.status_pub.publish('TrackGate')
                     return 'found_gate'
 
                 if time.time() - start_time > 10:
@@ -35,7 +32,6 @@ class FinalRoundStrategy(BaseStrategy):
         def __init__(self, outer: BaseStrategy):
             smach.State.__init__(self, outcomes=['lost_target', 'passed_gate'])
             self.outer = outer
-            self.status_pub = rospy.Publisher('status', String, queue_size=10)
 
         def execute(self, userdata):
             rate = rospy.Rate(100)
@@ -46,7 +42,6 @@ class FinalRoundStrategy(BaseStrategy):
                     return 'lost_target'
 
                 if gate_pose.size_x > 350:
-                    self.status_pub.publish('PassGate')
                     return 'passed_gate'
 
                 self.outer.output.speed = 0.8
@@ -60,7 +55,6 @@ class FinalRoundStrategy(BaseStrategy):
         def __init__(self, outer: BaseStrategy):
             smach.State.__init__(self, outcomes=['finished'])
             self.outer = outer
-            self.status_pub = rospy.Publisher('status', String, queue_size=10)
 
         def execute(self, userdata):
             rate = rospy.Rate(100)
@@ -77,7 +71,6 @@ class FinalRoundStrategy(BaseStrategy):
                 self.outer.output.target_depth = 1
 
                 if time.time() - start_time > 15:
-                    self.status_pub.publish('LeaveGate')
                     return 'finished'
 
                 rate.sleep()
@@ -86,7 +79,6 @@ class FinalRoundStrategy(BaseStrategy):
         def __init__(self, outer: BaseStrategy):
             smach.State.__init__(self, outcomes=['finished'])
             self.outer = outer
-            self.status_pub = rospy.Publisher('status', String, queue_size=10)
 
         def execute(self, userdata):
             rate = rospy.Rate(100)
@@ -97,7 +89,6 @@ class FinalRoundStrategy(BaseStrategy):
                 self.outer.output.target_depth = 1
 
                 if time.time() - start_time > 10:
-                    self.status_pub.publish('LeaveGate')
                     return 'finished'
 
                 rate.sleep()
@@ -106,7 +97,6 @@ class FinalRoundStrategy(BaseStrategy):
         def __init__(self, outer: BaseStrategy):
             smach.State.__init__(self, outcomes=['found_flare', 'time_out'])
             self.outer = outer
-            self.status_pub = rospy.Publisher('status', String, queue_size=10)
 
         def execute(self, userdata):
             rate = rospy.Rate(100)
@@ -118,7 +108,6 @@ class FinalRoundStrategy(BaseStrategy):
                 self.outer.output.target_depth = 1.3
 
                 if self.outer.input.flare_pos.size_x > 0:
-                    self.status_pub.publish('TrackFlare')
                     return 'found_flare'
 
                 if time.time() - start_time > 50:
@@ -130,7 +119,6 @@ class FinalRoundStrategy(BaseStrategy):
         def __init__(self, outer: BaseStrategy):
             smach.State.__init__(self, outcomes=['lost_target', 'close_enough'])
             self.outer = outer
-            self.status_pub = rospy.Publisher('status', String, queue_size=10)
 
         def execute(self, userdata):
             rate = rospy.Rate(100)
@@ -138,11 +126,9 @@ class FinalRoundStrategy(BaseStrategy):
                 flare_pos = self.outer.input.flare_pos
 
                 if flare_pos.size_x < 0:
-                    self.status_pub.publish('SearchFlare')
                     return 'lost_target'
 
                 if flare_pos.size_x > 100:
-                    self.status_pub.publish('HitFlare')
                     return 'close_enough'
 
                 self.outer.output.speed = 0.8
@@ -156,7 +142,6 @@ class FinalRoundStrategy(BaseStrategy):
         def __init__(self, outer: BaseStrategy):
             smach.State.__init__(self, outcomes=['finished'])
             self.outer = outer
-            self.status_pub = rospy.Publisher('status', String, queue_size=10)
 
         def execute(self, userdata):
             rate = rospy.Rate(100)
@@ -175,7 +160,6 @@ class FinalRoundStrategy(BaseStrategy):
                 self.outer.output.target_depth = 1.3
 
                 if time.time() - start_time > 20:
-                    self.status_pub.publish('Surfacing')
                     return 'finished'
 
                 rate.sleep()
@@ -184,7 +168,6 @@ class FinalRoundStrategy(BaseStrategy):
         def __init__(self, outer: BaseStrategy):
             smach.State.__init__(self, outcomes=['finished'])
             self.outer = outer
-            self.status_pub = rospy.Publisher('status', String, queue_size=10)
 
         def execute(self, userdata):
             rate = rospy.Rate(100)
@@ -194,19 +177,10 @@ class FinalRoundStrategy(BaseStrategy):
                 self.outer.output.target_yaw = 2.1
                 self.outer.output.target_depth = 0
                 rate.sleep()
-                self.status_pub.publish('Succeeded')
             return 'finished'
 
     def __init__(self):
-        self.current_status = ''
         super().__init__(outcomes=['succeeded'])
-        self.status_pub = rospy.Publisher('status', String, queue_size=10)
-        #self._on_change_callback = on_change_callback
-
-        #rospy.init_node('stategy')
-
-        
-	
 
         with self.sm:
             smach.StateMachine.add(
@@ -215,7 +189,6 @@ class FinalRoundStrategy(BaseStrategy):
                     'found_gate': 'TrackGate',
                     'time_out': 'PassGate'
                 })
-
             smach.StateMachine.add(
                 'TrackGate', self.TrackGate(self),
                 transitions={
@@ -223,28 +196,24 @@ class FinalRoundStrategy(BaseStrategy):
                     'passed_gate': 'PassGate'
                 }
             )
-
             smach.StateMachine.add(
                 'PassGate', self.PassGate(self),
                 transitions={
                     'finished': 'LeaveGate'
                 }
             )
-
             smach.StateMachine.add(
                 'LeaveGate', self.LeaveGate(self),
                 transitions={
                     'finished': 'SearchFlare'
                 }
             )
-
             smach.StateMachine.add(
                 'SearchFlare', self.SearachFlare(self),
                 transitions={
                     'found_flare': 'TrackFlare',
                     'time_out': 'Surfacing'
                 })
-
             smach.StateMachine.add(
                 'TrackFlare', self.TrackFlare(self),
                 transitions={
@@ -252,23 +221,18 @@ class FinalRoundStrategy(BaseStrategy):
                     'close_enough': 'HitFlare'
                 }
             )
-            self.status_pub.publish('HitFlare')
-
             smach.StateMachine.add(
                 'HitFlare', self.HitFlare(self),
                 transitions={
                     'finished': 'Surfacing'
                 }
             )
-            self.status_pub.publish('Surfacing')
-
             smach.StateMachine.add(
                 'Surfacing', self.Surfacing(self),
                 transitions={
                     'finished': 'succeeded'
                 }
             )
-
 
 
 if __name__ == "__main__":

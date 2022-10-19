@@ -37,10 +37,10 @@ class PID_Test():
         self.depth_setpoint_pub.publish(Float64(depth))
 
     def forward(self):
-        self.setpoint_vec = np.array([0.845, 0, 0.5, 0.5, 0])
+        self.setpoint_vec = np.array([0.293, 0, 0.5, 0.5, 0])
 
     def hover(self): 
-        self.setpoint_vec = np.array([0.845, 0, 0, 0, 0])
+        self.setpoint_vec = np.array([0, 0, 0, 0, 0])
 
     def left(self): 
         self.setpoint_vec = np.array([-np.pi/2, 0, 0, 0, 0])
@@ -65,6 +65,14 @@ class PID_Test():
 
     def submerge(self): 
         self.setpoint_vec = np.array([0, 0, 0, 0, 1])
+
+    def hsubmerge(self):
+        self.setpoint_vec = np.array([0, 0, 0, 0, 0.5])
+
+    def tsubmerge(self):
+        #initilaze depth = -0.27
+        table_depth = -0.27
+        self.setpoint_vec = np.array([0, 0, 0, 0, 0, 0.01 + tabledepth])
 
     def pub_setpoints(self,event): 
         if self.state == "f": 
@@ -96,6 +104,19 @@ class PID_Test():
             self.hover()
         elif self.state == "submerge": 
             self.submerge()
+        elif self.state == "hsubmerge":
+            self.hsubmerge()
+        elif self.state == "tsubmerge":
+            self.tsubmerge();
+        elif self.state == "sf":
+            # sf for submerge-forward
+            self.submerge()
+            self.forward()
+        elif self.state == "hsf":
+            # hsf for half-submerge-forward
+            self.half_submerge()
+            self.forward()
+
 
         self.publish_setpoints()
 

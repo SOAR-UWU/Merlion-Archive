@@ -11,11 +11,12 @@ class RobotInitialisation(object):
         self.init_states = [
             {
                 "name": "start", 
-                "start_state": False
+                "start_state": True
             },
+
             {
                 "name": "motor", 
-                "start_state": False
+                "start_state": True
             }, 
             {
                 "name": "imu", 
@@ -52,7 +53,7 @@ class RobotInitialisation(object):
         setattr(self,"%s_active"%name,state.data)
         print('setting state of name to ', state)
         self.publish_init_state() 
-
+ 
     def publish_init_state(self): 
         all_states_active = True 
         for init_state in self.init_states: 

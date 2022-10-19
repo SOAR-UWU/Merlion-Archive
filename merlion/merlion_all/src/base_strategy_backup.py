@@ -3,20 +3,17 @@ import rospy
 import smach
 import time
 from std_msgs.msg import Float64
+from std_msgs.msg import String
 from vision_msgs.msg import BoundingBox2D
 
-#TO GO STRAIGHT
 
 class Input:
     def __init__(self):
         self.current_yaw = 0
-        self.current_depth = 0
-        self.current_pitch = 0
         self.initial_yaw = 0
-        self.initial_depth =  0
-        self.initial_pitch = 0
         self.gate_pos = BoundingBox2D()
         self.flare_pos = BoundingBox2D()
+        self.flare_color = "Red"
 
 
 class Output:
@@ -24,7 +21,6 @@ class Output:
         self._speed = 0
         self._target_yaw = 0
         self._target_depth = 0
-        self._target_pitch = 0
         self._on_change_callback = on_change_callback
 
     @property
@@ -54,15 +50,6 @@ class Output:
         self._target_depth = new_target_depth
         self._on_change_callback()
 
-    @property
-    def target_pitch(self):
-        return self._target_pitch
-
-    @target_pitch.setter
-    def target_pitch(self, new_target_pitch):
-        self._target_pitch = new_target_pitch
-        self._on_change_callback()
-
 
 class BaseStrategy:
     def __init__(self, outcomes=[], input_keys=[], output_keys=[]):
@@ -80,20 +67,17 @@ class BaseStrategy:
         self.input = Input()
         self.output = Output(self._on_output_update)
 
-        self._roll_pub = rospy.Publisher('/merlion_pid/roll/setpoint', Float64, queue_size=10)
-        self._pitch_pub = rospy.Publisher('/merlion_pid/pitch/setpoint', Float64, queue_size=10)
+        rospy.Publisher('/merlion_pid/roll/setpoint', Float64, queue_size=10).publish(Float64(0))
+        rospy.Publisher('/merlion_pid/pitch/setpoint', Float64, queue_size=10).publish(Float64(0))
         self._yaw_pub = rospy.Publisher('/merlion_pid/yaw/setpoint', Float64, queue_size=10)
         self._depth_pub = rospy.Publisher('/merlion_pid/depth/setpoint', Float64, queue_size=10)
         self._speed_pub = rospy.Publisher('/merlion_pid/speed/setpoint', Float64, queue_size=10)
 
         self._yaw_first_update = True
-        self._depth_first_update = True
-        self._pitch_first_update = True
         rospy.Subscriber('/merlion_state/yaw', Float64, self._on_yaw_update)
-        rospy.Subscriber('/merlion_state/depth', Float64, self._on_depth_update)
-        rospy.Subscriber('/merlion_state/pitch', Float64, self._on_pitch_update)
         rospy.Subscriber('/merlion_cv/gate/pos', BoundingBox2D, self._on_gate_pos_update)
         rospy.Subscriber('/merlion_cv/flare/pos', BoundingBox2D, self._on_flare_pos_update)
+        rospy.Subscriber('/merlion_cv/flare/color', String,  self._on_flare_color_update)
 
         self._time_last_publish = 0
 
@@ -103,37 +87,21 @@ class BaseStrategy:
             self.input.initial_yaw = msg.data
         self.input.current_yaw = msg.data
 
-    def _on_depth_update(self, msg):
-        if self._depth_first_update:
-            self._depth_first_update = False
-            self.input.initial_depth = msg.data
-        self.input.current_depth = msg.data
-
-    def _on_pitch_update(self, msg):
-        if self._pitch_first_update:
-            self._pitch_first_update = False
-            self.input.initial_pitch = msg.data
-        self.input.current_pitch = msg.data
-
     def _on_gate_pos_update(self, msg):
         self.input.gate_pos = msg
 
     def _on_flare_pos_update(self, msg):
         self.input.flare_pos = msg
 
-    def _on_output_update(self):
+    def _on_flare_color_update(self, msg):
+        self.input.flare_color = msg
 
+    def _on_output_update(self):
         if time.time() - self._time_last_publish > 0.01:
-            self.effective_yaw = self.input.current_yaw + 0.0003 * self.input.gate_pos.center.x
-            self.effective_depth = self.input.current_depth - 0.000125 * self.input.gate_pos.center.y
-            self.effective_pitch = self.input.current_pitch - 0.0001 * self.input.gate_pos.center.y
             self._time_last_publish = time.time()
-            #self._roll_pub.publish(Float64(0))
-            self._pitch_pub.publish(Float64(0))
-            self._yaw_pub.publish(Float64(2.93))
-            #self._yaw_pub.publish(Float64(self.effective_yaw))
-            self._depth_pub.publish(Float64(1))
-            self._speed_pub.publish(Float64(0.5))
+            self._yaw_pub.publish(Float64(self.output.target_yaw))
+            self._depth_pub.publish(Float64(self.output.target_depth))
+            self._speed_pub.publish(Float64(self.output.speed))
 
     def execute(self):
         return self.sm.execute()

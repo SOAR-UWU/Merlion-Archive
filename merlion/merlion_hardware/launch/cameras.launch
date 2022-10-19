@@ -6,7 +6,7 @@
   <group ns="/$(arg ns)">
     <node ns="$(arg first_camera_ns)" pkg="video_stream_opencv" type="video_stream" name="camera_stream" output="screen"> 
       <remap from="camera" to="camera_image" />
-      <param name="video_stream_provider" type="string" value="4" />
+      <param name="video_stream_provider" type="string" value="0" />
       <param name="camera_name" type="string" value="camera" />
       <param name="buffer_queue_size" type="int" value="10" />
       <param name="frame_id" type="string" value="camera" />
@@ -17,7 +17,7 @@
     </node>
     <node ns= "$(arg second_camera_ns)" pkg="video_stream_opencv" type="video_stream" name="second_camera_stream" output="screen"> 
       <remap from="camera" to="camera_image" />
-      <param name="video_stream_provider" type="string" value="0" />
+      <param name="video_stream_provider" type="string" value="4" />
       <param name="camera_name" type="string" value="camera" />
       <param name="buffer_queue_size" type="int" value="10" />
       <param name="frame_id" type="string" value="camera" />

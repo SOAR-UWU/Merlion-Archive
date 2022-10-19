@@ -1,7 +1,9 @@
 <launch>
   <include file="$(find merlion_pid)/launch/pid_publisher.launch" />
   <include file="$(find merlion_state)/launch/state_publisher.launch" />
+  <?ignore
   <include file="$(find merlion_cv)/launch/all_trackers.launch" />
+  ?>
   <include file="$(find merlion_hardware)/launch/all_hardware.launch" /> 
   <node name="initialization" pkg="merlion_all" type="initialisation.py" output="screen"/>
 </launch>

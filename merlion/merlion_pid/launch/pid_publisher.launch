@@ -10,7 +10,7 @@
     </node>
 
     <node name="controller" pkg="pid" type="controller" ns="yaw" output="screen" >
-      <param name="Kp" value="10" />
+      <param name="Kp" value="2" />
       <param name="Ki" value="3.0" />
       <param name="Kd" value="0.0" />
       <param name="upper_limit" value="1" />
@@ -23,7 +23,7 @@
     <node name="controller" pkg="pid" type="controller" ns="pitch" output="screen" >
       <param name="Kp" value="1.0" />
       <param name="Ki" value="0.00" />
-      <param name="Kd" value="0.0" />
+      <param name="Kd" value="0.1" />
       <param name="upper_limit" value="1" />
       <param name="lower_limit" value="-1" />
       <param name="windup_limit" value="10" />
@@ -31,7 +31,7 @@
     </node>
 
     <node name="controller" pkg="pid" type="controller" ns="roll" output="screen" >
-      <param name="Kp" value="1.2" />
+      <param name="Kp" value="0" />
       <param name="Ki" value="0.00" />
       <param name="Kd" value="0.0" />
       <param name="upper_limit" value="1" />
@@ -51,7 +51,7 @@
     </node>
      
     <node name="pid_test" pkg="merlion_pid" type="pid_test.py" output="screen"/> 
-    <!-- <node name="setpoint_once" pkg="merlion_pid" type="setpoint_once.py" output="screen"/> -->
+    <!--<node name="setpoint_once" pkg="merlion_pid" type="setpoint_once.py" output="screen"/> -->
 
   </group>
 </launch>

@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
 import numpy as np
-import time
+
 import rospy
 from geometry_msgs.msg import Twist 
 from merlion_hardware.msg import Motor 
@@ -14,10 +14,10 @@ class ThrusterManagerNode:
         self.tranform_matrix = np.array([
             # x  y   z roll pitch yaw
             [0,  0,  0, -1,  -1,  0],  # left front motor
-            [0,  0,  0,  1,   1,  0],  # right front motor
-            [-1, 0,  0,  0,   0, -1],  # left rear motor
-            [1,  0,  0,  0,   0, -1],  # right rear motor
-            [0,  0, -1,  0,   1,  0]   # rear motor
+            [0,  0,  0,  1,  1,  0],  # right front motor
+            [-1, 0,  0,  0,  0, -1],  # left rear motor
+            [1,  0,  0,  0,  0, -1],  # right rear motor
+            [0,  0,  -1,  0,  -1,  0]   # rear motor
         ])
 
         self.normalizing_matrix = np.array([
@@ -31,9 +31,8 @@ class ThrusterManagerNode:
         self.num_thrusters = len(self.tranform_matrix)
 
         rospy.Subscriber(self.node_name + '/input', Twist, self.input_callback)
-        self.thruster_pub = rospy.Publisher('merlion_hardware/thruster_values', Motor, queue_size=1)
-        self.relay = rospy.Publisher('merlion_hardware/relay_thrust',Motor,queue_size=1)
-        self.counter = 1
+        self.thruster_pub = rospy.Publisher('merlion_hardware/thruster_values', Motor, queue_size=10)
+
         rospy.loginfo("ThrusterManagerNode started")
 
     def input_callback(self, msg):
@@ -51,20 +50,12 @@ class ThrusterManagerNode:
         output = self.scale * self.tranform_matrix.dot(control_vector)
         # self.update_thrusters(output)
         msg = Motor()
-        msg.m1 = motor_limit(output[0], 45) 
-        msg.m2 = motor_limit(output[1], -45)
+        msg.m1 = motor_limit(output[0], 70) 
+        msg.m2 = motor_limit(output[1], -70)
         msg.m3 = motor_limit(output[2], 0)
         msg.m4 = motor_limit(output[3], 0)
-        msg.m5 = motor_limit(output[4], 60) #was -50
-        #time.sleep(0.02)
+        msg.m5 = motor_limit(output[4],-75)
         self.thruster_pub.publish(msg)
-        if self.counter >=3:
-            self.relay.publish(msg)
-            self.counter = 0
-
-        else:
-            self.counter +=1
-            #self.relay.publish(msg)
 
 if __name__ == '__main__':
     ThrusterManagerNode()

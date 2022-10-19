@@ -1,0 +1,17 @@
+hough_minLineLength: 200
+hough_maxLineGap: 15 
+canny_minVal: 300
+canny_maxVal: 500
+canny_apertureSize: 5
+vertical_line_thresh: 10
+horizontal_line_thresh: 20
+green: (60,95)
+orange: (50,75)
+gaussian_blur: (5,5)
+dilate: (3,3)
+line_cluster_max_height_diff: 20
+vertical_len_ratio: 1.5
+vertical_max_height_diff: 40
+vertical_line_angle: 10
+corner_max_gap_proportion: 0.1
+distance_max_error_proportion: 0.1
